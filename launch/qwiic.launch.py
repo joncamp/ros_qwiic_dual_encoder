@@ -10,8 +10,9 @@ def generate_launch_description():
             package='ros_qwiic_dual_encoder',
             executable='ros_qwiic_dual_encoder',
             name='ros_qwiic_dual_encoder',
-            output='screen'),
+            output='screen',
             parameters=[
                 {'bus': '/dev/i2c-8'},
             ]
+        )
     ])
