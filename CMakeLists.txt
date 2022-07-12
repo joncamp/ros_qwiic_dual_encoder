@@ -62,6 +62,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(Boost REQUIRED system)
 
 include_directories(
@@ -73,6 +74,7 @@ include_directories(
 ament_target_dependencies(${PROJECT_NAME} 
   rclcpp
   std_msgs
+  sensor_msgs
   Boost)
 
 install(TARGETS ${PROJECT_NAME}

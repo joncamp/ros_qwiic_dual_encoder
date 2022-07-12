@@ -58,18 +58,20 @@ class I2CPublisher : public rclcpp::Node
     I2CPublisher()
     : Node("ros_qwiic_dual_encoder")
     , _id(0)
+    , _bus("")
     {
     }
 
     void initialize()
     {
       get_parameter_or<uint8_t>("i2c_address", _id, 0x73); 
+      get_parameter_or<std::string>("bus", _bus, "/dev/i2c-1"); 
       get_parameter_or<std::string>("left_wheel_name", _leftName, "left"); 
       get_parameter_or<std::string>("right_wheel_name", _rightName, "right"); 
       get_parameter_or<double>("poll", _poll, 5.0);
       
 
-      Wire.begin();
+      Wire.begin(_bus);
       Wire.setAddressSize(1); 
 
       uint16_t version = readWord(SparkFunEncoder_Cmd_VERSION);
@@ -132,6 +134,7 @@ class I2CPublisher : public rclcpp::Node
     rclcpp::TimerBase::SharedPtr _timer;
 
     uint8_t _id;
+    std::string _bus;
     double _poll;
     std::string _leftName;
     std::string _rightName;
@@ -143,6 +146,7 @@ int main(int argc, char * argv[])
 
     auto node = std::make_shared<I2CPublisher>();
     node->declare_parameter("i2c_address");
+    node->declare_parameter("bus");
     node->declare_parameter("left_wheel_name");
     node->declare_parameter("right_wheel_name");
     node->declare_parameter("poll");
