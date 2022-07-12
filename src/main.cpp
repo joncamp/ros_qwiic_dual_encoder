@@ -70,9 +70,9 @@ class I2CPublisher : public rclcpp::Node
       get_parameter_or<std::string>("right_wheel_name", _rightName, "right"); 
       get_parameter_or<double>("poll", _poll, 5.0);
       
-
-      Wire.begin(_bus);
-      Wire.setAddressSize(1); 
+      pWire = new TwoWire(_bus);
+      pWire->begin();
+      pWire->setAddressSize(1); 
 
       uint16_t version = readWord(SparkFunEncoder_Cmd_VERSION);
       RCLCPP_INFO(rclcpp::get_logger("ros_qwiic_dual_encoder"), "Talking to encoder version [0x%02x]", version);
@@ -113,22 +113,22 @@ class I2CPublisher : public rclcpp::Node
 
     uint16_t readWord(SparkFunEncoder_Cmd cmd)
     {
-      Wire.beginTransmission(_id);
-      Wire.write(static_cast<uint8_t>(cmd));
-      Wire.endTransmission();
+      pWire->beginTransmission(_id);
+      pWire->write(static_cast<uint8_t>(cmd));
+      pWire->endTransmission();
 
-      uint32_t readWord = Wire.requestFrom(_id, sizeof(uint16_t));
+      uint32_t readWord = pWire->requestFrom(_id, sizeof(uint16_t));
 
       return static_cast<uint16_t>(readWord & 0xFFFF);
     }
 
     void writeWord(SparkFunEncoder_Cmd cmd, uint16_t value)
     {
-      Wire.beginTransmission(_id);
-      Wire.write(static_cast<uint8_t>(cmd));
-      Wire.write(highByte(value));
-      Wire.write(lowByte(value));
-      Wire.endTransmission();
+      pWire->beginTransmission(_id);
+      pWire->write(static_cast<uint8_t>(cmd));
+      pWire->write(highByte(value));
+      pWire->write(lowByte(value));
+      pWire->endTransmission();
     }
 
     rclcpp::TimerBase::SharedPtr _timer;
@@ -138,6 +138,8 @@ class I2CPublisher : public rclcpp::Node
     double _poll;
     std::string _leftName;
     std::string _rightName;
+
+    TwoWire *pWire = NULL;
 };
 
 int main(int argc, char * argv[])
