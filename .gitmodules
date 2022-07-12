@@ -4,6 +4,3 @@
 [submodule "src/wiring_for_ros"]
 	path = src/wiring_for_ros
 	url = git@github.com:polyhobbyist/wiring_for_ros.git
-[submodule "wiring_for_ros"]
-	path = wiring_for_ros
-	url = https://github.com/polyhobbyist/wiring_for_ros
